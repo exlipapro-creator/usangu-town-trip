@@ -1,0 +1,6 @@
+{
+  "name": "Usangu Logistics - Town Trip Management System",
+  "description": "Centralised Town Trip fleet operations, vehicle allocation, dispatch, workshop & breakdown management, central stores, fuel tracking, and GPS monitoring.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
