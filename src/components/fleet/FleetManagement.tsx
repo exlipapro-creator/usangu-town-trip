@@ -53,36 +53,36 @@ export const FleetManagement: React.FC<FleetManagementProps> = ({
           </p>
         </div>
 
-        {/* Sub-tabs */}
-        <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
+        {/* Sub-tabs with smooth horizontal scroll for mobile */}
+        <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-semibold overflow-x-auto max-w-full">
           <button
             onClick={() => setActiveTab('trucks')}
-            className={`px-3 py-1.5 rounded-lg transition-all ${
-              activeTab === 'trucks' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
+            className={`min-h-[40px] px-3.5 py-2 rounded-lg transition-all whitespace-nowrap cursor-pointer touch-manipulation ${
+              activeTab === 'trucks' ? 'bg-amber-500 text-slate-950 font-bold shadow-sm' : 'text-slate-400 hover:text-white'
             }`}
           >
             Trucks ({state.vehicles.length})
           </button>
           <button
             onClick={() => setActiveTab('trailers')}
-            className={`px-3 py-1.5 rounded-lg transition-all ${
-              activeTab === 'trailers' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
+            className={`min-h-[40px] px-3.5 py-2 rounded-lg transition-all whitespace-nowrap cursor-pointer touch-manipulation ${
+              activeTab === 'trailers' ? 'bg-amber-500 text-slate-950 font-bold shadow-sm' : 'text-slate-400 hover:text-white'
             }`}
           >
             Trailers ({state.trailers.length})
           </button>
           <button
             onClick={() => setActiveTab('drivers')}
-            className={`px-3 py-1.5 rounded-lg transition-all ${
-              activeTab === 'drivers' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
+            className={`min-h-[40px] px-3.5 py-2 rounded-lg transition-all whitespace-nowrap cursor-pointer touch-manipulation ${
+              activeTab === 'drivers' ? 'bg-amber-500 text-slate-950 font-bold shadow-sm' : 'text-slate-400 hover:text-white'
             }`}
           >
             Drivers ({state.drivers.length})
           </button>
           <button
             onClick={() => setActiveTab('technicians')}
-            className={`px-3 py-1.5 rounded-lg transition-all ${
-              activeTab === 'technicians' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
+            className={`min-h-[40px] px-3.5 py-2 rounded-lg transition-all whitespace-nowrap cursor-pointer touch-manipulation ${
+              activeTab === 'technicians' ? 'bg-amber-500 text-slate-950 font-bold shadow-sm' : 'text-slate-400 hover:text-white'
             }`}
           >
             Technicians ({state.technicians.length})
@@ -96,22 +96,22 @@ export const FleetManagement: React.FC<FleetManagementProps> = ({
           {/* Filter Bar */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-900 p-3 rounded-xl border border-slate-800">
             <div className="relative flex-1">
-              <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+              <Search className="w-4 h-4 text-slate-500 absolute left-3 top-3.5" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search by Fleet #, Registration, Make (e.g. US-TRK-01, T 482 DWL, Scania)..."
-                className="w-full bg-slate-950 text-slate-200 text-xs rounded-lg pl-9 pr-4 py-2 border border-slate-800 focus:outline-none focus:border-amber-500"
+                placeholder="Search by Fleet #, Registration, Make (e.g. US-TRK-01, Scania)..."
+                className="w-full min-h-[44px] bg-slate-950 text-slate-200 text-xs rounded-lg pl-9 pr-4 py-2.5 border border-slate-800 focus:outline-none focus:border-amber-500"
               />
             </div>
 
             <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-slate-500" />
+              <Filter className="w-4 h-4 text-slate-500 shrink-0" />
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="bg-slate-950 text-slate-300 text-xs rounded-lg px-3 py-2 border border-slate-800 focus:outline-none focus:border-amber-500"
+                className="w-full sm:w-auto min-h-[44px] bg-slate-950 text-slate-300 text-xs rounded-lg px-3 py-2.5 border border-slate-800 focus:outline-none focus:border-amber-500 cursor-pointer"
               >
                 <option value="all">All Operational Statuses</option>
                 <option value="available">Available for Dispatch</option>
@@ -123,9 +123,10 @@ export const FleetManagement: React.FC<FleetManagementProps> = ({
             </div>
           </div>
 
-          {/* Trucks Table */}
+          {/* Trucks Container: High-density Table on Desktop, Responsive Cards on Mobile */}
           <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
-            <div className="overflow-x-auto">
+            {/* Desktop Table View (>= 768px) */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-semibold text-[11px] tracking-wider">
@@ -158,9 +159,9 @@ export const FleetManagement: React.FC<FleetManagementProps> = ({
                         </td>
                         <td className="py-3 px-4 text-slate-300">
                           <div>{vehicle.make} {vehicle.model}</div>
-                          <div className="text-[10px] text-slate-500">{vehicle.vehicleType} • {vehicle.capacityTonnes}T</div>
+                          <div className="text-[10px] text-slate-500">{vehicle.vehicleType} · {vehicle.capacityTonnes}T</div>
                         </td>
-                        <td className="py-3 px-4 font-mono text-slate-200">
+                        <td className="py-3 px-4 font-mono text-slate-200 tabular-nums">
                           {vehicle.currentOdometer.toLocaleString()} km
                         </td>
                         <td className="py-3 px-4">
@@ -211,7 +212,7 @@ export const FleetManagement: React.FC<FleetManagementProps> = ({
                               setSelectedVehicle(vehicle);
                               setVehicleDetailTab('overview');
                             }}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium transition-colors"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium transition-colors cursor-pointer"
                           >
                             <Eye className="w-3.5 h-3.5 text-amber-400" />
                             <span>Profile</span>
@@ -222,6 +223,90 @@ export const FleetManagement: React.FC<FleetManagementProps> = ({
                   })}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Cards View (< 768px) */}
+            <div className="md:hidden divide-y divide-slate-800/80">
+              {filteredVehicles.map((vehicle) => {
+                const avail = isVehicleAvailable(vehicle);
+                const trailer = state.trailers.find(t => t.id === vehicle.attachedTrailerId);
+                const currentTrip = state.trips.find(t => t.id === vehicle.currentTripId);
+
+                return (
+                  <div key={vehicle.id} className="p-4 space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono font-bold text-amber-400 text-sm">{vehicle.fleetNumber}</span>
+                          <span className="font-bold text-white text-sm">{vehicle.registrationNumber}</span>
+                        </div>
+                        <div className="text-xs text-slate-400 mt-0.5">
+                          {vehicle.make} {vehicle.model} · {vehicle.capacityTonnes}T
+                        </div>
+                      </div>
+
+                      {/* Status badge */}
+                      <div>
+                        {vehicle.hasCriticalDefect ? (
+                          <span className="inline-flex items-center gap-1 bg-red-600 text-white font-bold px-2 py-0.5 rounded text-[10px] animate-pulse">
+                            <ShieldAlert className="w-3 h-3" />
+                            LOCKED
+                          </span>
+                        ) : currentTrip ? (
+                          <span className="bg-blue-500/20 text-blue-300 border border-blue-500/30 px-2 py-0.5 rounded text-[10px] font-semibold">
+                            ON TRIP
+                          </span>
+                        ) : vehicle.status === 'under_maintenance' ? (
+                          <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded text-[10px] font-semibold">
+                            WORKSHOP
+                          </span>
+                        ) : avail.available ? (
+                          <span className="inline-flex items-center gap-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-semibold">
+                            <CheckCircle2 className="w-3 h-3" />
+                            AVAILABLE
+                          </span>
+                        ) : (
+                          <span className="text-slate-500 text-[10px] uppercase font-semibold">
+                            {vehicle.status}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-xs bg-slate-950/70 p-2.5 rounded-lg border border-slate-800/80">
+                      <div>
+                        <span className="text-[10px] text-slate-500 block uppercase font-medium">Odometer</span>
+                        <span className="font-mono text-slate-200 tabular-nums font-semibold">{vehicle.currentOdometer.toLocaleString()} km</span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-slate-500 block uppercase font-medium">Trailer</span>
+                        <span className="text-slate-300 truncate block">
+                          {trailer ? `${trailer.trailerNumber}` : 'Unattached'}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-slate-500 block uppercase font-medium">LATRA Expiry</span>
+                        <span className="text-slate-400 text-[11px]">{vehicle.inspectionExpiry}</span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-slate-500 block uppercase font-medium">Insurance</span>
+                        <span className="text-slate-400 text-[11px]">{vehicle.insuranceExpiry}</span>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        setSelectedVehicle(vehicle);
+                        setVehicleDetailTab('overview');
+                      }}
+                      className="w-full min-h-[44px] flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-750 text-slate-200 text-xs font-semibold border border-slate-700 transition-colors cursor-pointer touch-manipulation"
+                    >
+                      <Eye className="w-4 h-4 text-amber-400" />
+                      <span>View Vehicle 360° Profile</span>
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -234,7 +319,9 @@ export const FleetManagement: React.FC<FleetManagementProps> = ({
             <h3 className="font-bold text-white text-sm">Registered Town Trip Trailers & Skeletals</h3>
             <span className="text-xs text-slate-400">Total: {state.trailers.length} Assets</span>
           </div>
-          <div className="overflow-x-auto">
+
+          {/* Desktop Table */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-semibold text-[11px]">
@@ -279,6 +366,50 @@ export const FleetManagement: React.FC<FleetManagementProps> = ({
               </tbody>
             </table>
           </div>
+
+          {/* Mobile Trailer Cards */}
+          <div className="md:hidden divide-y divide-slate-800/80">
+            {state.trailers.map((tr) => {
+              const attachedTruck = state.vehicles.find(v => v.id === tr.attachedToVehicleId);
+              return (
+                <div key={tr.id} className="p-4 space-y-2">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="font-mono font-bold text-amber-400 text-sm">{tr.trailerNumber}</div>
+                      <div className="font-semibold text-white text-xs">{tr.registrationNumber}</div>
+                    </div>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+                      tr.status === 'in_trip' ? 'bg-blue-500/20 text-blue-300' :
+                      tr.status === 'attached' ? 'bg-amber-500/20 text-amber-300' :
+                      'bg-emerald-500/20 text-emerald-300'
+                    }`}>
+                      {tr.status.replace(/_/g, ' ')}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-xs bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/70">
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase">Category</span>
+                      <span className="text-slate-300 font-medium">{tr.category}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase">Capacity</span>
+                      <span className="text-slate-300 font-medium">{tr.capacityTonnes} Tonnes</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase">Condition</span>
+                      <span className="text-emerald-400 font-medium">{tr.condition}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase">Attached Truck</span>
+                      <span className="text-slate-300 truncate block">
+                        {attachedTruck ? attachedTruck.fleetNumber : 'Unattached'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
 
@@ -289,7 +420,9 @@ export const FleetManagement: React.FC<FleetManagementProps> = ({
             <h3 className="font-bold text-white text-sm">Qualified Town Trip Heavy Articulated Drivers</h3>
             <span className="text-xs text-slate-400">Total: {state.drivers.length} Drivers</span>
           </div>
-          <div className="overflow-x-auto">
+
+          {/* Desktop Table */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-semibold text-[11px]">
@@ -325,6 +458,45 @@ export const FleetManagement: React.FC<FleetManagementProps> = ({
               </tbody>
             </table>
           </div>
+
+          {/* Mobile Driver Cards */}
+          <div className="md:hidden divide-y divide-slate-800/80">
+            {state.drivers.map((drv) => (
+              <div key={drv.id} className="p-4 space-y-2">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="font-semibold text-white text-sm">{drv.name}</div>
+                    <div className="font-mono text-amber-400 text-xs">{drv.staffId}</div>
+                  </div>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+                    drv.status === 'on_trip' ? 'bg-blue-500/20 text-blue-300' :
+                    drv.status === 'available' ? 'bg-emerald-500/20 text-emerald-300' :
+                    'bg-slate-800 text-slate-400'
+                  }`}>
+                    {drv.status.replace(/_/g, ' ')}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/70">
+                  <div>
+                    <span className="text-[10px] text-slate-500 block uppercase">Phone</span>
+                    <a href={`tel:${drv.phone}`} className="text-amber-400 font-mono underline">{drv.phone}</a>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-500 block uppercase">Class</span>
+                    <span className="text-slate-300 font-medium">{drv.licenseClass}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-500 block uppercase">License #</span>
+                    <span className="text-slate-400 font-mono text-[11px]">{drv.licenseNumber}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-500 block uppercase">Expiry</span>
+                    <span className="text-slate-400 text-[11px]">{drv.licenseExpiry}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -335,7 +507,9 @@ export const FleetManagement: React.FC<FleetManagementProps> = ({
             <h3 className="font-bold text-white text-sm">Central Fleet Workshop Technical Staff</h3>
             <span className="text-xs text-slate-400">Total: {state.technicians.length} Technicians</span>
           </div>
-          <div className="overflow-x-auto">
+
+          {/* Desktop Table */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-semibold text-[11px]">
@@ -368,6 +542,37 @@ export const FleetManagement: React.FC<FleetManagementProps> = ({
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Technician Cards */}
+          <div className="md:hidden divide-y divide-slate-800/80">
+            {state.technicians.map((tech) => (
+              <div key={tech.id} className="p-4 space-y-2">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="font-semibold text-white text-sm">{tech.name}</div>
+                    <div className="font-mono text-amber-400 text-xs">{tech.staffId} · {tech.specialty}</div>
+                  </div>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+                    tech.status === 'busy' ? 'bg-amber-500/20 text-amber-300' :
+                    tech.status === 'available' ? 'bg-emerald-500/20 text-emerald-300' :
+                    'bg-slate-800 text-slate-400'
+                  }`}>
+                    {tech.status}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/70">
+                  <div>
+                    <span className="text-[10px] text-slate-500 block uppercase">Phone</span>
+                    <a href={`tel:${tech.phone}`} className="text-amber-400 font-mono underline">{tech.phone}</a>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-500 block uppercase">Active Work Orders</span>
+                    <span className="text-amber-400 font-bold font-mono">{tech.activeWorkOrdersCount} Assigned</span>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

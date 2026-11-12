@@ -202,7 +202,8 @@ export const FuelManagement: React.FC<FuelManagementProps> = ({
         </div>
 
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-semibold text-[11px] tracking-wider">
@@ -231,10 +232,10 @@ export const FuelManagement: React.FC<FuelManagementProps> = ({
                         <div className="font-bold text-white">{vehicle?.fleetNumber}</div>
                         <div className="text-[11px] text-slate-400">{vehicle?.registrationNumber}</div>
                       </td>
-                      <td className="py-3.5 px-4 font-mono font-bold text-white text-sm">
+                      <td className="py-3.5 px-4 font-mono font-bold text-white text-sm tabular-nums">
                         {tx.litres} L
                       </td>
-                      <td className="py-3.5 px-4 font-mono text-slate-200">
+                      <td className="py-3.5 px-4 font-mono text-slate-200 tabular-nums">
                         <div>TZS {tx.totalCostTZS.toLocaleString()}</div>
                         <div className="text-[10px] text-slate-500">@{tx.unitPriceTZS}/L</div>
                       </td>
@@ -242,7 +243,7 @@ export const FuelManagement: React.FC<FuelManagementProps> = ({
                         <div className="font-semibold text-slate-200">{tx.supplierOrStation}</div>
                         <div className="text-[10px] text-slate-500 uppercase">{tx.sourceType.replace(/_/g, ' ')}</div>
                       </td>
-                      <td className="py-3.5 px-4 font-mono text-slate-300">
+                      <td className="py-3.5 px-4 font-mono text-slate-300 tabular-nums">
                         <div>Odo: {tx.odometerReading.toLocaleString()} km</div>
                         {tx.distanceTravelledKm && (
                           <div className="text-slate-400 text-[11px] font-sans">
@@ -250,7 +251,7 @@ export const FuelManagement: React.FC<FuelManagementProps> = ({
                           </div>
                         )}
                       </td>
-                      <td className="py-3.5 px-4 font-mono font-bold">
+                      <td className="py-3.5 px-4 font-mono font-bold tabular-nums">
                         {tx.consumptionLitersPer100Km ? (
                           <span className={tx.consumptionLitersPer100Km > 45 ? 'text-yellow-400' : 'text-emerald-400'}>
                             {tx.consumptionLitersPer100Km} L/100km
@@ -281,6 +282,62 @@ export const FuelManagement: React.FC<FuelManagementProps> = ({
                 })}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Fuel Cards View (< 768px) */}
+          <div className="md:hidden divide-y divide-slate-800/80">
+            {filteredTransactions.map((tx) => {
+              const vehicle = state.vehicles.find(v => v.id === tx.vehicleId);
+              const driver = state.drivers.find(d => d.id === tx.driverId);
+
+              return (
+                <div key={tx.id} className="p-4 space-y-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="font-mono font-bold text-amber-400 text-sm">{tx.transactionReference}</div>
+                      <div className="font-bold text-white text-xs">{vehicle?.fleetNumber} ({vehicle?.registrationNumber})</div>
+                    </div>
+
+                    {tx.hasException ? (
+                      <span className="inline-flex items-center gap-1 bg-yellow-500/20 text-yellow-300 border border-yellow-500/30 px-2 py-0.5 rounded text-[10px] font-bold shrink-0">
+                        <AlertTriangle className="w-3 h-3 text-yellow-400" />
+                        EXCEPTION
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-semibold shrink-0">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                        VERIFIED
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-xs bg-slate-950/70 p-3 rounded-xl border border-slate-800/80">
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase font-medium">Volume & Cost</span>
+                      <div className="font-mono font-bold text-white tabular-nums text-sm">{tx.litres} Litres</div>
+                      <div className="text-amber-400 font-mono text-[11px] tabular-nums">TZS {tx.totalCostTZS.toLocaleString()}</div>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase font-medium">Burn Rate</span>
+                      <div className="font-mono font-bold text-sm tabular-nums">
+                        {tx.consumptionLitersPer100Km ? (
+                          <span className={tx.consumptionLitersPer100Km > 45 ? 'text-yellow-400' : 'text-emerald-400'}>
+                            {tx.consumptionLitersPer100Km} L/100km
+                          </span>
+                        ) : (
+                          <span className="text-slate-400 text-xs italic font-normal">Baseline Fill</span>
+                        )}
+                      </div>
+                      <div className="text-slate-400 text-[11px]">Run: {tx.distanceTravelledKm || 0} km</div>
+                    </div>
+                    <div className="col-span-2 pt-1 border-t border-slate-800/60 text-[11px] text-slate-400">
+                      <div><strong>Station:</strong> {tx.supplierOrStation}</div>
+                      <div><strong>Driver:</strong> {driver?.name || 'Assigned'} · <strong>Issued by:</strong> {tx.issuedBy}</div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

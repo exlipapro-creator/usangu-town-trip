@@ -183,7 +183,8 @@ export const SafetyManagement: React.FC = () => {
       {/* INSPECTIONS VIEW */}
       {activeTab === 'inspections' && (
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-semibold text-[11px] tracking-wider">
@@ -211,7 +212,7 @@ export const SafetyManagement: React.FC = () => {
                       <td className="py-3.5 px-4 uppercase text-[10px] font-semibold text-slate-300">
                         {insp.inspectionType.replace(/_/g, ' ')}
                       </td>
-                      <td className="py-3.5 px-4 font-mono text-slate-300">
+                      <td className="py-3.5 px-4 font-mono text-slate-300 tabular-nums">
                         {insp.odometer?.toLocaleString()} km
                       </td>
                       <td className="py-3.5 px-4 text-slate-300">
@@ -242,6 +243,60 @@ export const SafetyManagement: React.FC = () => {
                 })}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Inspection Cards View */}
+          <div className="md:hidden divide-y divide-slate-800/80">
+            {state.inspections.map((insp) => {
+              const vehicle = state.vehicles.find(v => v.id === insp.vehicleId);
+
+              return (
+                <div key={insp.id} className="p-4 space-y-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="font-mono font-bold text-amber-400 text-sm">{insp.inspectionReference}</div>
+                      <div className="font-bold text-white text-xs">{vehicle?.fleetNumber} ({vehicle?.registrationNumber})</div>
+                    </div>
+                    {insp.overallPassed ? (
+                      <span className="inline-flex items-center gap-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold shrink-0">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                        PASSED
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 bg-red-600 text-white font-bold px-2 py-0.5 rounded text-[10px] shrink-0">
+                        <ShieldAlert className="w-3 h-3" />
+                        FAILED
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-xs bg-slate-950/70 p-2.5 rounded-lg border border-slate-800/80">
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase font-medium">Type</span>
+                      <span className="text-slate-300 capitalize">{insp.inspectionType.replace(/_/g, ' ')}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase font-medium">Odometer</span>
+                      <span className="font-mono text-slate-200 tabular-nums">{insp.odometer?.toLocaleString()} km</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase font-medium">Audited By</span>
+                      <span className="text-slate-300">{insp.inspectedBy}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase font-medium">Date</span>
+                      <span className="text-slate-400">{new Date(insp.inspectedAt).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+
+                  {insp.remarks && (
+                    <div className="text-[11px] text-slate-400 italic">
+                      "{insp.remarks}"
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
@@ -276,12 +331,12 @@ export const SafetyManagement: React.FC = () => {
                       <strong>Defect Detail:</strong> {v.criticalDefectReason}
                     </p>
                     <div className="text-[11px] text-slate-400">
-                      Odometer: {v.currentOdometer.toLocaleString()} km • Make: {v.make} {v.model}
+                      Odometer: {v.currentOdometer.toLocaleString()} km · Make: {v.make} {v.model}
                     </div>
                   </div>
                   <button
                     onClick={() => resolveCriticalDefect(v.id)}
-                    className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shrink-0"
+                    className="min-h-[44px] px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-xs shrink-0 cursor-pointer touch-manipulation transition-colors"
                   >
                     Authorize Re-inspection & Clear Lock
                   </button>
@@ -295,7 +350,8 @@ export const SafetyManagement: React.FC = () => {
       {/* INCIDENTS VIEW */}
       {activeTab === 'incidents' && (
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-semibold text-[11px] tracking-wider">
@@ -332,7 +388,7 @@ export const SafetyManagement: React.FC = () => {
                       <td className="py-3.5 px-4 uppercase text-[10px] font-bold text-slate-300">
                         {inc.severity}
                       </td>
-                      <td className="py-3.5 px-4 font-mono text-slate-200">
+                      <td className="py-3.5 px-4 font-mono text-slate-200 tabular-nums">
                         TZS {inc.estimatedDamageTZS.toLocaleString()}
                       </td>
                       <td className="py-3.5 px-4 text-slate-400 text-[11px] max-w-xs line-clamp-1">
@@ -346,7 +402,7 @@ export const SafetyManagement: React.FC = () => {
                         ) : (
                           <button
                             onClick={() => closeIncident(inc.id, 'Investigation completed; corrective measures applied.')}
-                            className="px-2 py-0.5 rounded bg-blue-600 text-white font-bold text-[10px]"
+                            className="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs cursor-pointer"
                           >
                             Close Case
                           </button>
@@ -357,6 +413,56 @@ export const SafetyManagement: React.FC = () => {
                 })}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Incident Cards View */}
+          <div className="md:hidden divide-y divide-slate-800/80">
+            {state.incidents.map((inc) => {
+              const vehicle = state.vehicles.find(v => v.id === inc.vehicleId);
+              const driver = state.drivers.find(d => d.id === inc.driverId);
+
+              return (
+                <div key={inc.id} className="p-4 space-y-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="font-mono font-bold text-amber-400 text-sm">{inc.incidentReference}</div>
+                      <div className="font-bold text-white text-xs">{vehicle?.fleetNumber} · {inc.date}</div>
+                    </div>
+                    {inc.isClosed ? (
+                      <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                        CLOSED
+                      </span>
+                    ) : (
+                      <span className="bg-red-500/20 text-red-300 border border-red-500/30 px-2 py-0.5 rounded text-[10px] font-bold uppercase">
+                        {inc.severity} OPEN
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800/80 space-y-1.5 text-xs">
+                    <div className="font-semibold text-slate-200">{inc.incidentType}</div>
+                    <p className="text-slate-400 text-[11px]">{inc.description}</p>
+                    <div className="text-[11px] text-slate-500 pt-1 border-t border-slate-800/60 flex items-center justify-between">
+                      <span>Driver: {driver?.name || 'Assigned'}</span>
+                      <span className="font-mono text-slate-300">Damage: TZS {inc.estimatedDamageTZS.toLocaleString()}</span>
+                    </div>
+                    <div className="text-[11px] text-slate-400">
+                      <strong>Location:</strong> {inc.location}
+                    </div>
+                  </div>
+
+                  {!inc.isClosed && (
+                    <button
+                      onClick={() => closeIncident(inc.id, 'Investigation completed; corrective measures applied.')}
+                      className="w-full min-h-[44px] rounded-xl bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer touch-manipulation"
+                    >
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Close Safety Case & Confirm Corrective Action</span>
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

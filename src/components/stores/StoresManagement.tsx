@@ -219,7 +219,8 @@ export const StoresManagement: React.FC = () => {
           </div>
 
           <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-semibold text-[11px] tracking-wider">
@@ -248,15 +249,15 @@ export const StoresManagement: React.FC = () => {
                         <td className="py-3.5 px-4 text-slate-300 font-medium">
                           {p.category}
                         </td>
-                        <td className="py-3.5 px-4 font-mono text-sm font-bold">
+                        <td className="py-3.5 px-4 font-mono text-sm font-bold tabular-nums">
                           <span className={isLow ? 'text-red-400 font-black' : 'text-emerald-400'}>
                             {p.currentStock} {p.unitOfMeasure}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 font-mono text-slate-400">
+                        <td className="py-3.5 px-4 font-mono text-slate-400 tabular-nums">
                           {p.minimumStock} {p.unitOfMeasure}
                         </td>
-                        <td className="py-3.5 px-4 font-mono text-slate-200">
+                        <td className="py-3.5 px-4 font-mono text-slate-200 tabular-nums">
                           TZS {p.unitCostTZS.toLocaleString()}
                         </td>
                         <td className="py-3.5 px-4 text-slate-300 font-mono text-[11px]">
@@ -279,6 +280,54 @@ export const StoresManagement: React.FC = () => {
                 </tbody>
               </table>
             </div>
+
+            {/* Mobile Parts Cards View */}
+            <div className="md:hidden divide-y divide-slate-800/80">
+              {filteredParts.map((p) => {
+                const isLow = p.currentStock <= p.minimumStock;
+                return (
+                  <div key={p.id} className="p-4 space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <div className="font-mono font-bold text-amber-400 text-xs">{p.partCode}</div>
+                        <div className="font-bold text-white text-sm">{p.partName}</div>
+                        <div className="text-[11px] text-slate-400 mt-0.5">{p.description}</div>
+                      </div>
+                      {isLow ? (
+                        <span className="bg-red-500/20 text-red-300 border border-red-500/30 px-2 py-0.5 rounded text-[10px] font-bold shrink-0">
+                          LOW STOCK
+                        </span>
+                      ) : (
+                        <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-semibold shrink-0">
+                          OPTIMAL
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-xs bg-slate-950/70 p-2.5 rounded-lg border border-slate-800/80">
+                      <div>
+                        <span className="text-[10px] text-slate-500 block uppercase font-medium">Stock on Hand</span>
+                        <span className={`font-mono font-bold tabular-nums ${isLow ? 'text-red-400' : 'text-emerald-400'}`}>
+                          {p.currentStock} {p.unitOfMeasure}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-slate-500 block uppercase font-medium">Location</span>
+                        <span className="text-slate-300 font-mono text-[11px]">{p.storageLocation}</span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-slate-500 block uppercase font-medium">Unit Cost</span>
+                        <span className="text-slate-200 font-mono tabular-nums">TZS {p.unitCostTZS.toLocaleString()}</span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-slate-500 block uppercase font-medium">Category</span>
+                        <span className="text-slate-400 truncate block">{p.category}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
@@ -286,7 +335,8 @@ export const StoresManagement: React.FC = () => {
       {/* REQUISITIONS VIEW */}
       {activeTab === 'requisitions' && (
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-semibold text-[11px] tracking-wider">
@@ -318,13 +368,13 @@ export const StoresManagement: React.FC = () => {
                         <div className="font-semibold text-slate-200">{part?.partName}</div>
                         <div className="text-[10px] text-slate-500 font-mono">{part?.partCode}</div>
                       </td>
-                      <td className="py-3.5 px-4 font-mono text-sm font-bold text-white">
+                      <td className="py-3.5 px-4 font-mono text-sm font-bold text-white tabular-nums">
                         {req.quantityRequested} {part?.unitOfMeasure}
                       </td>
                       <td className="py-3.5 px-4 text-slate-300 text-[11px] max-w-xs line-clamp-1">
                         {req.justification}
                       </td>
-                      <td className="py-3.5 px-4 font-mono">
+                      <td className="py-3.5 px-4 font-mono tabular-nums">
                         <span className={canIssue ? 'text-emerald-400 font-bold' : 'text-red-400 font-bold'}>
                           {part?.currentStock} {part?.unitOfMeasure}
                         </span>
@@ -343,7 +393,7 @@ export const StoresManagement: React.FC = () => {
                           {req.status === 'pending_approval' && (
                             <button
                               onClick={() => approveSpareRequest(req.id)}
-                              className="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs"
+                              className="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs cursor-pointer"
                             >
                               Approve
                             </button>
@@ -351,7 +401,7 @@ export const StoresManagement: React.FC = () => {
                           {req.status === 'approved' && (
                             <button
                               onClick={() => handleIssueSubmit(req.id)}
-                              className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"
+                              className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs cursor-pointer"
                             >
                               Issue Stock
                             </button>
@@ -366,6 +416,80 @@ export const StoresManagement: React.FC = () => {
                 })}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Requisitions Cards View */}
+          <div className="md:hidden divide-y divide-slate-800/80">
+            {state.spareRequests.map((req) => {
+              const part = state.parts.find(p => p.id === req.partId);
+              const vehicle = state.vehicles.find(v => v.id === req.vehicleId);
+              const wo = state.workOrders.find(w => w.id === req.workOrderId);
+              const canIssue = (part?.currentStock || 0) >= req.quantityRequested;
+
+              return (
+                <div key={req.id} className="p-4 space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="font-mono font-bold text-amber-400 text-sm">{req.requestReference}</div>
+                      <div className="font-bold text-white text-xs">{vehicle?.fleetNumber} · WO: {wo?.workOrderReference}</div>
+                    </div>
+                    <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold shrink-0 ${
+                      req.status === 'issued' ? 'bg-emerald-500/20 text-emerald-300' :
+                      req.status === 'approved' ? 'bg-blue-500/20 text-blue-300' :
+                      'bg-amber-500/20 text-amber-300'
+                    }`}>
+                      {req.status.replace(/_/g, ' ')}
+                    </span>
+                  </div>
+
+                  <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800/80 space-y-2 text-xs">
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase font-medium">Requested Part</span>
+                      <div className="text-white font-semibold">{part?.partName}</div>
+                      <div className="text-amber-400 font-mono text-[11px]">{part?.partCode}</div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800/60">
+                      <div>
+                        <span className="text-[10px] text-slate-500 block uppercase font-medium">Qty Needed</span>
+                        <span className="font-mono font-bold text-white tabular-nums">{req.quantityRequested} {part?.unitOfMeasure}</span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-slate-500 block uppercase font-medium">In Central Stock</span>
+                        <span className={`font-mono font-bold tabular-nums ${canIssue ? 'text-emerald-400' : 'text-red-400'}`}>
+                          {part?.currentStock} {part?.unitOfMeasure}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="pt-1 border-t border-slate-800/60 text-[11px] text-slate-400">
+                      <strong>Justification:</strong> {req.justification}
+                    </div>
+                  </div>
+
+                  {/* Touch-Friendly Action Buttons on Mobile */}
+                  {req.status === 'pending_approval' && (
+                    <button
+                      onClick={() => approveSpareRequest(req.id)}
+                      className="w-full min-h-[44px] rounded-xl bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-blue-950/30 transition-colors cursor-pointer touch-manipulation"
+                    >
+                      <Check className="w-4 h-4" />
+                      <span>Approve Spare Requisition</span>
+                    </button>
+                  )}
+
+                  {req.status === 'approved' && (
+                    <button
+                      onClick={() => handleIssueSubmit(req.id)}
+                      className="w-full min-h-[44px] rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-emerald-950/30 transition-colors cursor-pointer touch-manipulation"
+                    >
+                      <Package className="w-4 h-4" />
+                      <span>Issue Spare Part from Central Stores</span>
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

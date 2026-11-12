@@ -95,17 +95,18 @@ export const ReportsManagement: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* Action buttons: Horizontal, touch-friendly min 44px */}
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
             onClick={exportShuntingReportToCSV}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-950/40 transition-all cursor-pointer"
+            className="flex-1 sm:flex-initial min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-950/40 transition-colors cursor-pointer touch-manipulation"
           >
             <Download className="w-4 h-4" />
             <span>Export CSV / Excel</span>
           </button>
           <button
             onClick={handlePrint}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-all cursor-pointer"
+            className="flex-1 sm:flex-initial min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-750 text-slate-200 text-xs font-semibold border border-slate-700 transition-colors cursor-pointer touch-manipulation"
           >
             <Printer className="w-4 h-4 text-amber-400" />
             <span>Print Report (PDF)</span>
@@ -113,36 +114,36 @@ export const ReportsManagement: React.FC = () => {
         </div>
       </div>
 
-      {/* Report Type Selector Tabs */}
-      <div className="no-print flex items-center gap-1 bg-slate-900 p-2 rounded-xl border border-slate-800 text-xs">
+      {/* Report Type Selector Tabs: smooth horizontal scroll on mobile */}
+      <div className="no-print flex items-center gap-1 bg-slate-900 p-2 rounded-xl border border-slate-800 text-xs overflow-x-auto max-w-full">
         <button
           onClick={() => setSelectedReportType('shunting')}
-          className={`px-3 py-1.5 rounded-lg transition-all font-semibold ${
-            selectedReportType === 'shunting' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
+          className={`min-h-[40px] px-3.5 py-2 rounded-lg transition-all font-semibold whitespace-nowrap cursor-pointer touch-manipulation ${
+            selectedReportType === 'shunting' ? 'bg-amber-500 text-slate-950 font-bold shadow-sm' : 'text-slate-400 hover:text-white'
           }`}
         >
           General Shunting Report
         </button>
         <button
           onClick={() => setSelectedReportType('workshop')}
-          className={`px-3 py-1.5 rounded-lg transition-all font-semibold ${
-            selectedReportType === 'workshop' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
+          className={`min-h-[40px] px-3.5 py-2 rounded-lg transition-all font-semibold whitespace-nowrap cursor-pointer touch-manipulation ${
+            selectedReportType === 'workshop' ? 'bg-amber-500 text-slate-950 font-bold shadow-sm' : 'text-slate-400 hover:text-white'
           }`}
         >
           Workshop & Downtime Summary
         </button>
         <button
           onClick={() => setSelectedReportType('spares')}
-          className={`px-3 py-1.5 rounded-lg transition-all font-semibold ${
-            selectedReportType === 'spares' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
+          className={`min-h-[40px] px-3.5 py-2 rounded-lg transition-all font-semibold whitespace-nowrap cursor-pointer touch-manipulation ${
+            selectedReportType === 'spares' ? 'bg-amber-500 text-slate-950 font-bold shadow-sm' : 'text-slate-400 hover:text-white'
           }`}
         >
           Spares Consumption Ledger
         </button>
         <button
           onClick={() => setSelectedReportType('fuel')}
-          className={`px-3 py-1.5 rounded-lg transition-all font-semibold ${
-            selectedReportType === 'fuel' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
+          className={`min-h-[40px] px-3.5 py-2 rounded-lg transition-all font-semibold whitespace-nowrap cursor-pointer touch-manipulation ${
+            selectedReportType === 'fuel' ? 'bg-amber-500 text-slate-950 font-bold shadow-sm' : 'text-slate-400 hover:text-white'
           }`}
         >
           Fuel Expenditure & Burn Rate
@@ -150,7 +151,7 @@ export const ReportsManagement: React.FC = () => {
       </div>
 
       {/* REPORT CONTENT VIEW */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4 print-card">
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4 print-card">
         {/* Printable Official Header */}
         <div className="border-b border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
@@ -162,11 +163,11 @@ export const ReportsManagement: React.FC = () => {
               {selectedReportType === 'fuel' && 'FUEL DISPENSING & VEHICLE BURN RATE REPORT'}
             </h2>
             <div className="text-xs text-slate-400 mt-0.5">
-              Hub: Dar es Salaam Kurasini Yard • Extracted: {new Date().toLocaleString()} EAT
+              Hub: Dar es Salaam Kurasini Yard · Extracted: {new Date().toLocaleString()} EAT
             </div>
           </div>
 
-          <div className="text-right text-xs text-slate-400">
+          <div className="text-left sm:text-right text-xs text-slate-400">
             <div><strong>Generated by:</strong> {state.currentUser.name}</div>
             <div><strong>Role:</strong> {state.currentUser.department}</div>
           </div>
@@ -174,61 +175,106 @@ export const ReportsManagement: React.FC = () => {
 
         {/* 1. GENERAL SHUNTING REPORT (Exact PRD Section 14.4 Columns) */}
         {selectedReportType === 'shunting' && (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-semibold text-[10px] tracking-wider">
-                  <th className="py-2.5 px-3">Date</th>
-                  <th className="py-2.5 px-3">Trip Ref</th>
-                  <th className="py-2.5 px-3">Vehicle Reg</th>
-                  <th className="py-2.5 px-3">Fleet #</th>
-                  <th className="py-2.5 px-3">Trailer</th>
-                  <th className="py-2.5 px-3">Driver</th>
-                  <th className="py-2.5 px-3">Origin</th>
-                  <th className="py-2.5 px-3">Destination</th>
-                  <th className="py-2.5 px-3">Purpose</th>
-                  <th className="py-2.5 px-3">Dep Time</th>
-                  <th className="py-2.5 px-3">Ret Time</th>
-                  <th className="py-2.5 px-3">Open Odo</th>
-                  <th className="py-2.5 px-3">Close Odo</th>
-                  <th className="py-2.5 px-3">Dist (km)</th>
-                  <th className="py-2.5 px-3">Status</th>
-                  <th className="py-2.5 px-3">Remarks</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/80 text-[11px]">
-                {filteredTrips.map((trip) => {
-                  const vehicle = state.vehicles.find(v => v.id === trip.assignedVehicleId);
-                  const trailer = state.trailers.find(t => t.id === trip.assignedTrailerId);
-                  const driver = state.drivers.find(d => d.id === trip.primaryDriverId);
+          <div>
+            {/* Desktop 17-column Table */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-semibold text-[10px] tracking-wider">
+                    <th className="py-2.5 px-3">Date</th>
+                    <th className="py-2.5 px-3">Trip Ref</th>
+                    <th className="py-2.5 px-3">Vehicle Reg</th>
+                    <th className="py-2.5 px-3">Fleet #</th>
+                    <th className="py-2.5 px-3">Trailer</th>
+                    <th className="py-2.5 px-3">Driver</th>
+                    <th className="py-2.5 px-3">Origin</th>
+                    <th className="py-2.5 px-3">Destination</th>
+                    <th className="py-2.5 px-3">Purpose</th>
+                    <th className="py-2.5 px-3">Dep Time</th>
+                    <th className="py-2.5 px-3">Ret Time</th>
+                    <th className="py-2.5 px-3">Open Odo</th>
+                    <th className="py-2.5 px-3">Close Odo</th>
+                    <th className="py-2.5 px-3">Dist (km)</th>
+                    <th className="py-2.5 px-3">Status</th>
+                    <th className="py-2.5 px-3">Remarks</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800/80 text-[11px]">
+                  {filteredTrips.map((trip) => {
+                    const vehicle = state.vehicles.find(v => v.id === trip.assignedVehicleId);
+                    const trailer = state.trailers.find(t => t.id === trip.assignedTrailerId);
+                    const driver = state.drivers.find(d => d.id === trip.primaryDriverId);
 
-                  return (
-                    <tr key={trip.id} className="hover:bg-slate-850/60">
-                      <td className="py-2.5 px-3 font-mono text-slate-400 whitespace-nowrap">{trip.tripDate}</td>
-                      <td className="py-2.5 px-3 font-mono font-bold text-amber-400 whitespace-nowrap">{trip.tripReference}</td>
-                      <td className="py-2.5 px-3 font-bold text-white whitespace-nowrap">{vehicle?.registrationNumber}</td>
-                      <td className="py-2.5 px-3 font-mono text-slate-300">{vehicle?.fleetNumber}</td>
-                      <td className="py-2.5 px-3 text-slate-300 whitespace-nowrap">{trailer?.registrationNumber || 'None'}</td>
-                      <td className="py-2.5 px-3 text-slate-200 whitespace-nowrap">{driver?.name}</td>
-                      <td className="py-2.5 px-3 text-slate-300 whitespace-nowrap">{trip.origin}</td>
-                      <td className="py-2.5 px-3 text-slate-300 whitespace-nowrap">{trip.destination}</td>
-                      <td className="py-2.5 px-3 text-slate-400 max-w-xs truncate">{trip.purpose}</td>
-                      <td className="py-2.5 px-3 font-mono text-slate-400 whitespace-nowrap">
-                        {trip.actualDeparture ? new Date(trip.actualDeparture).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-'}
-                      </td>
-                      <td className="py-2.5 px-3 font-mono text-slate-400 whitespace-nowrap">
-                        {trip.actualReturn ? new Date(trip.actualReturn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-'}
-                      </td>
-                      <td className="py-2.5 px-3 font-mono text-slate-300">{trip.openingOdometer?.toLocaleString() || '-'}</td>
-                      <td className="py-2.5 px-3 font-mono text-slate-300">{trip.closingOdometer?.toLocaleString() || '-'}</td>
-                      <td className="py-2.5 px-3 font-mono font-bold text-emerald-400">{trip.distanceKm ? `${trip.distanceKm} km` : '-'}</td>
-                      <td className="py-2.5 px-3 uppercase text-[10px] font-semibold text-slate-300 whitespace-nowrap">{trip.status.replace(/_/g, ' ')}</td>
-                      <td className="py-2.5 px-3 text-slate-400 text-[10px] max-w-xs truncate">{trip.returnRemarks || trip.defectNotes || '-'}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                    return (
+                      <tr key={trip.id} className="hover:bg-slate-850/60">
+                        <td className="py-2.5 px-3 font-mono text-slate-400 whitespace-nowrap">{trip.tripDate}</td>
+                        <td className="py-2.5 px-3 font-mono font-bold text-amber-400 whitespace-nowrap">{trip.tripReference}</td>
+                        <td className="py-2.5 px-3 font-bold text-white whitespace-nowrap">{vehicle?.registrationNumber}</td>
+                        <td className="py-2.5 px-3 font-mono text-slate-300">{vehicle?.fleetNumber}</td>
+                        <td className="py-2.5 px-3 text-slate-300 whitespace-nowrap">{trailer?.registrationNumber || 'None'}</td>
+                        <td className="py-2.5 px-3 text-slate-200 whitespace-nowrap">{driver?.name}</td>
+                        <td className="py-2.5 px-3 text-slate-300 whitespace-nowrap">{trip.origin}</td>
+                        <td className="py-2.5 px-3 text-slate-300 whitespace-nowrap">{trip.destination}</td>
+                        <td className="py-2.5 px-3 text-slate-400 max-w-xs truncate">{trip.purpose}</td>
+                        <td className="py-2.5 px-3 font-mono text-slate-400 whitespace-nowrap">
+                          {trip.actualDeparture ? new Date(trip.actualDeparture).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-'}
+                        </td>
+                        <td className="py-2.5 px-3 font-mono text-slate-400 whitespace-nowrap">
+                          {trip.actualReturn ? new Date(trip.actualReturn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-'}
+                        </td>
+                        <td className="py-2.5 px-3 font-mono text-slate-300 tabular-nums">{trip.openingOdometer?.toLocaleString() || '-'}</td>
+                        <td className="py-2.5 px-3 font-mono text-slate-300 tabular-nums">{trip.closingOdometer?.toLocaleString() || '-'}</td>
+                        <td className="py-2.5 px-3 font-mono font-bold text-emerald-400 tabular-nums">{trip.distanceKm ? `${trip.distanceKm} km` : '-'}</td>
+                        <td className="py-2.5 px-3 uppercase text-[10px] font-semibold text-slate-300 whitespace-nowrap">{trip.status.replace(/_/g, ' ')}</td>
+                        <td className="py-2.5 px-3 text-slate-400 text-[10px] max-w-xs truncate">{trip.returnRemarks || trip.defectNotes || '-'}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Shunting Report Cards */}
+            <div className="md:hidden divide-y divide-slate-800/80">
+              {filteredTrips.map((trip) => {
+                const vehicle = state.vehicles.find(v => v.id === trip.assignedVehicleId);
+                const trailer = state.trailers.find(t => t.id === trip.assignedTrailerId);
+                const driver = state.drivers.find(d => d.id === trip.primaryDriverId);
+
+                return (
+                  <div key={trip.id} className="py-3.5 space-y-2 text-xs">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <span className="font-mono font-bold text-amber-400 text-sm">{trip.tripReference}</span>
+                        <div className="text-[11px] text-slate-400">{trip.tripDate}</div>
+                      </div>
+                      <span className="bg-slate-800 text-slate-300 px-2 py-0.5 rounded text-[10px] font-semibold uppercase">
+                        {trip.status.replace(/_/g, ' ')}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 bg-slate-950/70 p-2.5 rounded-lg border border-slate-800/80 text-[11px]">
+                      <div>
+                        <span className="text-slate-500 block">Vehicle</span>
+                        <span className="text-white font-semibold">{vehicle?.fleetNumber} ({vehicle?.registrationNumber})</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block">Driver</span>
+                        <span className="text-slate-200">{driver?.name || 'Unassigned'}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block">Route</span>
+                        <span className="text-slate-300 truncate block">{trip.origin} → {trip.destination}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block">Distance</span>
+                        <span className="text-emerald-400 font-bold font-mono">{trip.distanceKm ? `${trip.distanceKm} km` : 'In transit'}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 

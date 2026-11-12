@@ -218,7 +218,8 @@ export const WorkshopManagement: React.FC<WorkshopManagementProps> = ({
       {/* WORK ORDERS VIEW */}
       {activeTab === 'work_orders' && (
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-semibold text-[11px] tracking-wider">
@@ -273,13 +274,13 @@ export const WorkshopManagement: React.FC<WorkshopManagementProps> = ({
                           {wo.stage.replace(/_/g, ' ')}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 font-mono text-slate-300">
+                      <td className="py-3.5 px-4 font-mono text-slate-300 tabular-nums">
                         {wo.downtimeHours ? `${wo.downtimeHours} hrs` : '1.5 hrs'}
                       </td>
                       <td className="py-3.5 px-4 text-right">
                         <button
                           onClick={() => setSelectedWorkOrder(wo)}
-                          className="px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors"
+                          className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors cursor-pointer"
                         >
                           Manage Job Card →
                         </button>
@@ -290,13 +291,68 @@ export const WorkshopManagement: React.FC<WorkshopManagementProps> = ({
               </tbody>
             </table>
           </div>
+
+          {/* Mobile Work Order Cards View */}
+          <div className="md:hidden divide-y divide-slate-800/80">
+            {filteredWorkOrders.map((wo) => {
+              const vehicle = state.vehicles.find(v => v.id === wo.vehicleId);
+              const tech = state.technicians.find(t => t.id === wo.assignedTechnicianId);
+
+              return (
+                <div key={wo.id} className="p-4 space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="font-mono font-bold text-amber-400 text-sm">{wo.workOrderReference}</div>
+                      <div className="font-bold text-white text-xs">{vehicle?.fleetNumber} ({vehicle?.registrationNumber})</div>
+                    </div>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                      wo.priority === 'critical' ? 'bg-red-600 text-white' :
+                      wo.priority === 'high' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' :
+                      'bg-slate-800 text-slate-300'
+                    }`}>
+                      {wo.priority}
+                    </span>
+                  </div>
+
+                  <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800/80 space-y-2 text-xs">
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase font-medium">Diagnosis</span>
+                      <div className="text-slate-200 font-semibold">{wo.diagnosis}</div>
+                      <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-2">{wo.workDescription}</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800/60">
+                      <div>
+                        <span className="text-[10px] text-slate-500 block uppercase font-medium">Assigned Tech</span>
+                        <div className="text-slate-200 font-medium">{tech?.name || 'Unassigned'}</div>
+                        <div className="text-[10px] text-slate-500">{tech?.specialty}</div>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-slate-500 block uppercase font-medium">Repair Stage</span>
+                        <span className="text-amber-400 font-medium capitalize">{wo.stage.replace(/_/g, ' ')}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setSelectedWorkOrder(wo)}
+                    className="w-full min-h-[44px] rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-750 text-slate-200 border border-slate-700 text-xs font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer touch-manipulation"
+                  >
+                    <Wrench className="w-4 h-4 text-amber-400" />
+                    <span>Manage Job Card & Spare Parts</span>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
 
       {/* BREAKDOWNS VIEW */}
       {activeTab === 'breakdowns' && (
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-semibold text-[11px] tracking-wider">
@@ -353,7 +409,7 @@ export const WorkshopManagement: React.FC<WorkshopManagementProps> = ({
                               setWoDescription(`Address defect: ${bd.faultDescription}`);
                               setIsCreateWorkOrderOpen(true);
                             }}
-                            className="px-2.5 py-1 rounded bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs"
+                            className="px-2.5 py-1 rounded bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs cursor-pointer"
                           >
                             Create Work Order
                           </button>
@@ -364,6 +420,56 @@ export const WorkshopManagement: React.FC<WorkshopManagementProps> = ({
                 })}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Breakdowns Cards View */}
+          <div className="md:hidden divide-y divide-slate-800/80">
+            {state.breakdowns.map((bd) => {
+              const vehicle = state.vehicles.find(v => v.id === bd.vehicleId);
+
+              return (
+                <div key={bd.id} className="p-4 space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="font-mono font-bold text-amber-400 text-sm">{bd.breakdownReference}</div>
+                      <div className="font-bold text-white text-xs">{vehicle?.fleetNumber} ({vehicle?.registrationNumber})</div>
+                    </div>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                      bd.severity === 'critical' ? 'bg-red-600 text-white' :
+                      bd.severity === 'high' ? 'bg-amber-500/20 text-amber-300' :
+                      'bg-slate-800 text-slate-400'
+                    }`}>
+                      {bd.severity}
+                    </span>
+                  </div>
+
+                  <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800/80 space-y-1.5 text-xs">
+                    <div className="font-semibold text-slate-200">{bd.faultCategory}</div>
+                    <p className="text-slate-400 text-[11px]">{bd.faultDescription}</p>
+                    <div className="text-[11px] text-slate-500 pt-1 border-t border-slate-800/60">
+                      Reported by {bd.reportedBy} at {bd.vehicleLocation}
+                    </div>
+                  </div>
+
+                  {bd.status === 'reported' && (
+                    <button
+                      onClick={() => {
+                        setSelectedBreakdownForWo(bd);
+                        setWoVehicleId(bd.vehicleId);
+                        setWoDiagnosis(bd.faultDescription);
+                        setWoPriority(bd.severity);
+                        setWoDescription(`Address defect: ${bd.faultDescription}`);
+                        setIsCreateWorkOrderOpen(true);
+                      }}
+                      className="w-full min-h-[44px] rounded-xl bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-amber-950/30 transition-colors cursor-pointer touch-manipulation"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Convert to Formal Work Order</span>
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

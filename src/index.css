@@ -1,8 +1,39 @@
 @import "tailwindcss";
 
 @layer base {
+  :root {
+    /* Usangu Logistics Corporate Brand Tokens */
+    --usangu-blue: #1e3a8a;
+    --usangu-blue-dark: #172554;
+    --usangu-red: #dc2626;
+    --usangu-red-dark: #b91c1c;
+    --usangu-amber: #f59e0b;
+    --usangu-amber-dark: #d97706;
+
+    /* Theme Surfaces & Canvas */
+    --bg-canvas: #080d16;
+    --bg-surface: #0f172a;
+    --bg-surface-elevated: #1e293b;
+    --bg-sidebar: #05080f;
+
+    /* Borders & Hairlines */
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-prominent: rgba(255, 255, 255, 0.16);
+
+    /* Typography */
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+  }
+
   * {
     border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  body {
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
 
@@ -12,7 +43,7 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #090e17;
 }
 ::-webkit-scrollbar-thumb {
   background: #334155;
@@ -20,6 +51,11 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #475569;
+}
+
+/* Tabular Numerals for metrics, odometers, and currencies */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Print styling for General Shunting Report & Work Orders */
@@ -38,6 +74,23 @@
     border: 1px solid #cbd5e1 !important;
     box-shadow: none !important;
     page-break-inside: avoid;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+  }
+  .print-card * {
+    color: #0f172a !important;
+    border-color: #e2e8f0 !important;
   }
 }
 
+/* Mobile Touch Target & Safe Area utilities */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

@@ -153,7 +153,7 @@ export const GpsMonitoring: React.FC = () => {
   const selectedVehicle = state.vehicles.find(v => v.id === selectedVehicleId);
 
   return (
-    <div className="p-4 lg:p-6 space-y-4 max-w-7xl mx-auto flex flex-col h-[calc(100vh-6rem)]">
+    <div className="p-4 lg:p-6 space-y-4 max-w-7xl mx-auto flex flex-col min-h-screen lg:min-h-0 lg:h-[calc(100vh-6rem)]">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0">
         <div>
@@ -170,7 +170,7 @@ export const GpsMonitoring: React.FC = () => {
           <button
             onClick={handleManualSync}
             disabled={isSyncing}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-all cursor-pointer"
+            className="min-h-[44px] flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-750 text-slate-200 text-xs font-semibold border border-slate-700 transition-colors cursor-pointer touch-manipulation"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-amber-400 ${isSyncing ? 'animate-spin' : ''}`} />
             <span>Poll Provider Feeds</span>
@@ -179,9 +179,9 @@ export const GpsMonitoring: React.FC = () => {
       </div>
 
       {/* Main Workspace (Map + Telemetry Sidebar) */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-4 min-h-[480px]">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-4">
         {/* Leaflet Map Container */}
-        <div className="lg:col-span-3 bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg relative flex flex-col">
+        <div className="lg:col-span-3 bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg relative flex flex-col min-h-[360px] sm:min-h-[440px]">
           {/* Map Top Bar */}
           <div className="p-2.5 bg-slate-950/90 border-b border-slate-800 flex items-center justify-between text-xs z-10">
             <div className="flex items-center gap-2 font-mono">

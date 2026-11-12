@@ -2,15 +2,23 @@ import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { 
   LayoutDashboard, Truck, CalendarCheck, Wrench, Package, 
-  Fuel, Navigation, ShieldCheck, FileSpreadsheet, History 
+  Fuel, Navigation, ShieldCheck, FileSpreadsheet, History, X
 } from 'lucide-react';
+import { USANGU_BRAND } from '../../theme/brand';
 
 interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  mobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ 
+  activeTab, 
+  setActiveTab, 
+  mobileOpen = false, 
+  onCloseMobile 
+}) => {
   const { state } = useApp();
 
   const activeTripsCount = state.trips.filter(t => t.status === 'in_progress').length;
@@ -68,7 +76,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
       shortLabel: 'Fuel',
       icon: Fuel,
       badge: fuelExceptionsCount > 0 ? `${fuelExceptionsCount} flag` : null,
-      badgeColor: 'bg-red-500/20 text-red-300'
+      badgeColor: 'bg-yellow-500/20 text-yellow-300'
     },
     {
       id: 'gps',
@@ -104,11 +112,37 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
     }
   ];
 
-  return (
-    <aside className="no-print bg-slate-950 border-r border-slate-800 flex flex-col w-64 shrink-0 transition-all">
-      {/* Navigation list */}
-      <div className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
-        <div className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+  const handleNavClick = (id: string) => {
+    setActiveTab(id);
+    if (onCloseMobile) {
+      onCloseMobile();
+    }
+  };
+
+  const navContent = (
+    <div className="flex flex-col h-full bg-[#05080f] select-none">
+      {/* Mobile Drawer Header with Close Button */}
+      {mobileOpen && (
+        <div className="p-4 border-b border-slate-800 flex items-center justify-between lg:hidden bg-slate-950">
+          <div className="flex items-center gap-2">
+            <div className="h-7 w-7 rounded bg-blue-900 border border-blue-700/60 flex items-center justify-center font-bold text-amber-400 text-xs">
+              UL
+            </div>
+            <span className="font-extrabold text-white text-sm">USANGU LOGISTICS</span>
+          </div>
+          <button
+            onClick={onCloseMobile}
+            aria-label="Close Navigation Menu"
+            className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 touch-target flex items-center justify-center"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      )}
+
+      {/* Navigation Links List */}
+      <div className="flex-1 py-3 px-3 space-y-1 overflow-y-auto">
+        <div className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
           Town Trip Modules
         </div>
 
@@ -119,14 +153,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
           return (
             <button
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all group ${
+              onClick={() => handleNavClick(item.id)}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all group cursor-pointer touch-target ${
                 isActive
-                  ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+                  ? 'bg-blue-950/70 text-white border border-blue-700/60 shadow-sm relative'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
               }`}
             >
-              <div className="flex items-center gap-3 truncate">
+              {/* Active Brand Indicator Bar */}
+              {isActive && (
+                <div className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-amber-400 rounded-r"></div>
+              )}
+
+              <div className="flex items-center gap-3 truncate pl-1">
                 <Icon className={`w-4 h-4 shrink-0 transition-colors ${
                   isActive ? 'text-amber-400' : 'text-slate-400 group-hover:text-slate-300'
                 }`} />
@@ -134,7 +173,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
               </div>
 
               {item.badge && (
-                <span className={`text-[10px] px-2 py-0.5 rounded font-mono font-medium shrink-0 ${item.badgeColor}`}>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-medium shrink-0 tabular-nums ${item.badgeColor}`}>
                   {item.badge}
                 </span>
               )}
@@ -143,20 +182,46 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
         })}
       </div>
 
-      {/* Footer Info */}
-      <div className="p-3 border-t border-slate-800 bg-slate-900/40 text-[11px] text-slate-400 space-y-1">
+      {/* Sidebar Footer */}
+      <div className="p-3 border-t border-slate-800/80 bg-slate-950/60 text-[11px] text-slate-400 space-y-1.5">
         <div className="flex items-center justify-between">
-          <span>Operating Scope:</span>
-          <span className="text-slate-300 font-medium">Tanzania Port/Depot</span>
+          <span className="text-slate-400">Fleet Scope:</span>
+          <span className="text-slate-200 font-medium">Dedicated Town Trip</span>
         </div>
         <div className="flex items-center justify-between">
-          <span>Cost Framework:</span>
-          <span className="text-emerald-400 font-medium">TZS 0 Free / OSS</span>
+          <span className="text-slate-400">Depot Hub:</span>
+          <span className="text-amber-400 font-medium">Kurasini Yard</span>
         </div>
-        <div className="text-[10px] text-slate-400 pt-1">
-          Usangu Logistics Town Trip v1.0
+        <div className="text-[10px] text-slate-400 pt-1 border-t border-slate-900">
+          Usangu Logistics (T) Ltd • 2026
         </div>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* 1. Desktop Persistent Sidebar (Visible on screens >= 1024px) */}
+      <aside className="no-print hidden lg:flex flex-col w-64 shrink-0 border-r border-slate-800/80 bg-[#05080f] h-[calc(100vh-3.5rem)] sticky top-14 z-20">
+        {navContent}
+      </aside>
+
+      {/* 2. Mobile / Tablet Slide-over Drawer (Visible on screens < 1024px when triggered) */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden overflow-hidden">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"
+            onClick={onCloseMobile}
+            aria-hidden="true"
+          />
+
+          {/* Slide-over Drawer Container */}
+          <div className="fixed inset-y-0 left-0 max-w-xs w-full bg-[#05080f] shadow-2xl z-50 flex flex-col transform transition-transform ease-out duration-200">
+            {navContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 };

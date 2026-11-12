@@ -210,9 +210,10 @@ export const TripManagement: React.FC<TripManagementProps> = ({ initialCreateOpe
         </div>
       </div>
 
-      {/* Trips Table */}
+      {/* Trips Container: High-density Table on Desktop, Responsive Cards on Mobile */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
-        <div className="overflow-x-auto">
+        {/* Desktop Table View (>= 768px) */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
               <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-semibold text-[11px] tracking-wider">
@@ -276,7 +277,7 @@ export const TripManagement: React.FC<TripManagementProps> = ({ initialCreateOpe
                     </td>
 
                     {/* Odo */}
-                    <td className="py-3.5 px-4 font-mono">
+                    <td className="py-3.5 px-4 font-mono tabular-nums">
                       {trip.openingOdometer ? (
                         <div>
                           <span className="text-slate-400 text-[10px]">Start: </span>
@@ -334,7 +335,7 @@ export const TripManagement: React.FC<TripManagementProps> = ({ initialCreateOpe
                         {trip.status === 'pending_operations_approval' && (
                           <button
                             onClick={() => approveTripOps(trip.id)}
-                            className="px-2.5 py-1 rounded bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1 transition-colors"
+                            className="px-2.5 py-1 rounded bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer"
                           >
                             <Check className="w-3 h-3" />
                             <span>Ops Approve</span>
@@ -345,7 +346,7 @@ export const TripManagement: React.FC<TripManagementProps> = ({ initialCreateOpe
                         {trip.status === 'pending_yard_verification' && (
                           <button
                             onClick={() => verifyTripYard(trip.id)}
-                            className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1 transition-colors"
+                            className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer"
                           >
                             <CheckCircle2 className="w-3 h-3" />
                             <span>Yard Verify</span>
@@ -356,7 +357,7 @@ export const TripManagement: React.FC<TripManagementProps> = ({ initialCreateOpe
                         {trip.status === 'approved_for_dispatch' && (
                           <button
                             onClick={() => handleOpenDispatch(trip)}
-                            className="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1 transition-colors"
+                            className="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer"
                           >
                             <Truck className="w-3 h-3" />
                             <span>Dispatch</span>
@@ -367,7 +368,7 @@ export const TripManagement: React.FC<TripManagementProps> = ({ initialCreateOpe
                         {trip.status === 'in_progress' && (
                           <button
                             onClick={() => handleOpenReturn(trip)}
-                            className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1 transition-colors"
+                            className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer"
                           >
                             <RotateCcw className="w-3 h-3" />
                             <span>Record Return</span>
@@ -379,7 +380,7 @@ export const TripManagement: React.FC<TripManagementProps> = ({ initialCreateOpe
                           <button
                             onClick={() => setCancelModalTrip(trip)}
                             title="Cancel Trip"
-                            className="p-1 rounded text-slate-500 hover:text-red-400 hover:bg-slate-800 transition-colors"
+                            className="p-1 rounded text-slate-500 hover:text-red-400 hover:bg-slate-800 transition-colors cursor-pointer"
                           >
                             <Ban className="w-3.5 h-3.5" />
                           </button>
@@ -391,6 +392,148 @@ export const TripManagement: React.FC<TripManagementProps> = ({ initialCreateOpe
               })}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Trip Cards View (< 768px) */}
+        <div className="md:hidden divide-y divide-slate-800/80">
+          {filteredTrips.map((trip) => {
+            const vehicle = state.vehicles.find(v => v.id === trip.assignedVehicleId);
+            const trailer = state.trailers.find(t => t.id === trip.assignedTrailerId);
+            const driver = state.drivers.find(d => d.id === trip.primaryDriverId);
+
+            return (
+              <div key={trip.id} className="p-4 space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="font-mono font-bold text-amber-400 text-sm">{trip.tripReference}</div>
+                    <div className="text-[11px] text-slate-400">{trip.tripDate}</div>
+                  </div>
+
+                  <div>
+                    {trip.status === 'pending_operations_approval' && (
+                      <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded text-[10px] font-semibold">
+                        Awaiting Ops
+                      </span>
+                    )}
+                    {trip.status === 'pending_yard_verification' && (
+                      <span className="bg-orange-500/20 text-orange-300 border border-orange-500/30 px-2 py-0.5 rounded text-[10px] font-semibold">
+                        Awaiting Yard
+                      </span>
+                    )}
+                    {trip.status === 'approved_for_dispatch' && (
+                      <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-semibold">
+                        Ready for Exit
+                      </span>
+                    )}
+                    {trip.status === 'in_progress' && (
+                      <span className="bg-blue-500/20 text-blue-300 border border-blue-500/30 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-ping"></span>
+                        In Transit
+                      </span>
+                    )}
+                    {trip.status === 'completed' && (
+                      <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-semibold">
+                        Completed
+                      </span>
+                    )}
+                    {trip.status === 'cancelled' && (
+                      <span className="bg-slate-800 text-slate-400 px-2 py-0.5 rounded text-[10px] font-semibold">
+                        Cancelled
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800/80 space-y-2 text-xs">
+                  <div>
+                    <span className="text-[10px] text-slate-500 block uppercase font-medium">Route</span>
+                    <div className="text-slate-200 font-semibold flex items-center gap-1.5">
+                      <span>{trip.origin}</span>
+                      <span className="text-slate-500">→</span>
+                      <span>{trip.destination}</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800/60">
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase font-medium">Truck & Trailer</span>
+                      <div className="text-white font-medium">{vehicle?.fleetNumber}</div>
+                      <div className="text-[11px] text-slate-400">{trailer ? trailer.trailerNumber : 'Tractor Only'}</div>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase font-medium">Driver</span>
+                      <div className="text-slate-200 font-medium">{driver?.name || 'Unassigned'}</div>
+                      <div className="text-[11px] text-slate-500 font-mono">{driver?.staffId}</div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800/60 text-[11px]">
+                    <div>
+                      <span className="text-slate-500">Opening Odo: </span>
+                      <span className="text-slate-300 font-mono tabular-nums">{trip.openingOdometer ? `${trip.openingOdometer.toLocaleString()} km` : 'Pending'}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500">Distance: </span>
+                      <span className="text-emerald-400 font-bold font-mono">{trip.distanceKm ? `${trip.distanceKm} km` : '-'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mobile Workflow Touch-Friendly Action Buttons (min 44px) */}
+                <div className="flex flex-col gap-2 pt-1">
+                  {trip.status === 'pending_operations_approval' && (
+                    <button
+                      onClick={() => approveTripOps(trip.id)}
+                      className="w-full min-h-[44px] rounded-xl bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-amber-950/30 transition-colors cursor-pointer touch-manipulation"
+                    >
+                      <Check className="w-4 h-4" />
+                      <span>Approve Town Trip (Operations)</span>
+                    </button>
+                  )}
+
+                  {trip.status === 'pending_yard_verification' && (
+                    <button
+                      onClick={() => verifyTripYard(trip.id)}
+                      className="w-full min-h-[44px] rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-emerald-950/30 transition-colors cursor-pointer touch-manipulation"
+                    >
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Verify Yard Clearance & Staging</span>
+                    </button>
+                  )}
+
+                  {trip.status === 'approved_for_dispatch' && (
+                    <button
+                      onClick={() => handleOpenDispatch(trip)}
+                      className="w-full min-h-[44px] rounded-xl bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-blue-950/30 transition-colors cursor-pointer touch-manipulation"
+                    >
+                      <Truck className="w-4 h-4" />
+                      <span>Authorize Gate Exit & Record Departure Odo</span>
+                    </button>
+                  )}
+
+                  {trip.status === 'in_progress' && (
+                    <button
+                      onClick={() => handleOpenReturn(trip)}
+                      className="w-full min-h-[44px] rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-emerald-950/30 transition-colors cursor-pointer touch-manipulation"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                      <span>Record Safe Return & Closing Odo</span>
+                    </button>
+                  )}
+
+                  {trip.status !== 'completed' && trip.status !== 'cancelled' && (
+                    <button
+                      onClick={() => setCancelModalTrip(trip)}
+                      className="w-full min-h-[38px] rounded-lg bg-slate-800 hover:bg-red-950/40 text-slate-400 hover:text-red-300 border border-slate-700/80 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer touch-manipulation"
+                    >
+                      <Ban className="w-3.5 h-3.5" />
+                      <span>Cancel Trip Order</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 

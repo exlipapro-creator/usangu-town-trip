@@ -75,7 +75,7 @@ export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({
         <div>
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-400">
             <span>Usangu Dedicated Town Trip Operations</span>
-            <span className="text-slate-600">•</span>
+            <span className="text-slate-600">·</span>
             <span className="text-slate-400">Dar es Salaam Corridor</span>
           </div>
           <h1 className="text-xl lg:text-2xl font-black text-white mt-1">
@@ -86,30 +86,30 @@ export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({
           </p>
         </div>
 
-        {/* Quick Action Buttons */}
-        <div className="flex flex-wrap items-center gap-2">
+        {/* Quick Action Buttons: Horizontal on desktop/tablet, touch-friendly min 44px on mobile */}
+        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
           <button
             onClick={onOpenCreateTrip}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-md shadow-amber-950/30 transition-all cursor-pointer"
+            className="flex-1 sm:flex-initial min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-bold text-xs shadow-md shadow-amber-950/30 transition-colors cursor-pointer touch-manipulation"
           >
-            <PlusCircle className="w-4 h-4" />
-            <span>New Town Trip</span>
+            <PlusCircle className="w-4 h-4 shrink-0" />
+            <span className="whitespace-nowrap">New Town Trip</span>
           </button>
 
           <button
             onClick={onOpenReportBreakdown}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-xs transition-all cursor-pointer"
+            className="flex-1 sm:flex-initial min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-750 text-slate-200 border border-slate-700 font-semibold text-xs transition-colors cursor-pointer touch-manipulation"
           >
-            <Wrench className="w-4 h-4 text-amber-400" />
-            <span>Report Defect</span>
+            <Wrench className="w-4 h-4 text-amber-400 shrink-0" />
+            <span className="whitespace-nowrap">Report Defect</span>
           </button>
 
           <button
             onClick={onOpenRecordFuel}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-xs transition-all cursor-pointer"
+            className="flex-1 sm:flex-initial min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-750 text-slate-200 border border-slate-700 font-semibold text-xs transition-colors cursor-pointer touch-manipulation"
           >
-            <Fuel className="w-4 h-4 text-yellow-400" />
-            <span>Record Fuel Issue</span>
+            <Fuel className="w-4 h-4 text-amber-400 shrink-0" />
+            <span className="whitespace-nowrap">Record Fuel</span>
           </button>
         </div>
       </div>

@@ -72,13 +72,14 @@ export const AuditAndAdmin: React.FC = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search audit trail by actor, action, trip ref, or work order #..."
-                className="w-full bg-slate-950 text-slate-200 text-xs rounded-lg pl-9 pr-4 py-2 border border-slate-800 focus:outline-none focus:border-amber-500"
+                className="w-full min-h-[44px] bg-slate-950 text-slate-200 text-xs rounded-lg pl-9 pr-4 py-2.5 border border-slate-800 focus:outline-none focus:border-amber-500"
               />
             </div>
           </div>
 
           <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-semibold text-[11px] tracking-wider">
@@ -123,6 +124,38 @@ export const AuditAndAdmin: React.FC = () => {
                 </tbody>
               </table>
             </div>
+
+            {/* Mobile Audit Event Cards */}
+            <div className="md:hidden divide-y divide-slate-800/80">
+              {filteredLogs.map((log) => (
+                <div key={log.id} className="p-4 space-y-2 text-xs">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <span className="bg-slate-800 text-amber-400 px-2 py-0.5 rounded text-[10px] font-bold font-mono">
+                        {log.action}
+                      </span>
+                      <div className="font-mono text-slate-400 text-[10px] mt-1">
+                        {new Date(log.timestamp).toLocaleString()}
+                      </div>
+                    </div>
+                    <span className="font-mono text-slate-400 text-[11px] truncate max-w-[140px]">
+                      {log.resource}: {log.resourceId}
+                    </span>
+                  </div>
+
+                  <p className="text-slate-200 text-xs">
+                    {log.details}
+                  </p>
+
+                  <div className="pt-1 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-400">
+                    <span>By: <strong className="text-white">{log.actor}</strong> ({log.role})</span>
+                    {log.previousState && log.newState && (
+                      <span className="font-mono text-amber-400 text-[10px]">{log.previousState} → {log.newState}</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -133,7 +166,7 @@ export const AuditAndAdmin: React.FC = () => {
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
             <div>
               <h3 className="font-bold text-white text-sm">Database-Backed Background Job Queue</h3>
-              <p className="text-xs text-slate-400">Zero external cloud costs • Runs locally inside application engine</p>
+              <p className="text-xs text-slate-400">Zero external cloud costs · Runs locally inside application engine</p>
             </div>
           </div>
 
@@ -141,7 +174,7 @@ export const AuditAndAdmin: React.FC = () => {
             {state.backgroundJobs.map(job => (
               <div key={job.id} className="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs">
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="font-bold text-white text-sm">{job.jobName}</span>
                     <span className="bg-slate-800 text-slate-300 px-2 py-0.5 rounded text-[10px] font-mono">
                       {job.frequency}
@@ -154,15 +187,15 @@ export const AuditAndAdmin: React.FC = () => {
                     <strong>Last Result:</strong> {job.lastResult}
                   </div>
                   <div className="text-[10px] text-slate-500 font-mono">
-                    Last Run: {new Date(job.lastRun).toLocaleTimeString()} • Next: {new Date(job.nextRun).toLocaleTimeString()}
+                    Last Run: {new Date(job.lastRun).toLocaleTimeString()} · Next: {new Date(job.nextRun).toLocaleTimeString()}
                   </div>
                 </div>
 
                 <button
                   onClick={() => runBackgroundJob(job.id)}
-                  className="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 shrink-0 transition-colors"
+                  className="w-full md:w-auto min-h-[44px] px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shrink-0 transition-colors cursor-pointer touch-manipulation"
                 >
-                  <Play className="w-3.5 h-3.5" />
+                  <Play className="w-4 h-4" />
                   <span>Execute Task Now</span>
                 </button>
               </div>
